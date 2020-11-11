@@ -11,7 +11,7 @@ const { getTxHash } = Inventory
 test('create Inventory', function (t) {
   t.test('no peers', function (t) {
     try {
-      var inv = new Inventory()
+      const inv = new Inventory()
       t.notOk(inv, 'should have thrown')
     } catch (err) {
       t.ok(err, 'threw error')
@@ -20,13 +20,13 @@ test('create Inventory', function (t) {
     }
   })
   t.test('normal constructor', function (t) {
-    var inv = new Inventory(new MockPeer())
+    const inv = new Inventory(new MockPeer())
     t.ok(inv instanceof Inventory, 'got Inventory')
     inv.close()
     t.end()
   })
   t.test('constructor without "new"', function (t) {
-    var inv = Inventory(new MockPeer())
+    const inv = Inventory(new MockPeer())
     t.ok(inv instanceof Inventory, 'got Inventory')
     inv.close()
     t.end()
@@ -35,13 +35,13 @@ test('create Inventory', function (t) {
 })
 
 test('inv handling', function (t) {
-  var peer = new MockPeer()
-  var inv = new Inventory(peer)
-  let tx = createMockTx()
-  let hash = getTxHash(tx)
+  const peer = new MockPeer()
+  const inv = new Inventory(peer)
+  const tx = createMockTx()
+  const hash = getTxHash(tx)
 
-  let peerEvents = wrapEvents(peer)
-  let invEvents = wrapEvents(inv)
+  const peerEvents = wrapEvents(peer)
+  const invEvents = wrapEvents(inv)
 
   function eventCleanup (t) {
     t.test('event cleanup', function (t) {
@@ -65,7 +65,7 @@ test('inv handling', function (t) {
   eventCleanup(t)
 
   t.test('multiple item inv', function (t) {
-    var hashes = [
+    const hashes = [
       Buffer.from('01234567890123456789012345678901'),
       Buffer.from('abcdefghijklmnopqrstuv0123456789')
     ]
@@ -123,10 +123,10 @@ test('inv handling', function (t) {
 })
 
 test('tx handling', function (t) {
-  var peer = new MockPeer()
-  var inv = new Inventory(peer)
-  var peerEvents = wrapEvents(peer)
-  var invEvents = wrapEvents(inv)
+  const peer = new MockPeer()
+  const inv = new Inventory(peer)
+  const peerEvents = wrapEvents(peer)
+  const invEvents = wrapEvents(inv)
 
   function eventCleanup (t) {
     t.test('event cleanup', function (t) {
@@ -136,8 +136,8 @@ test('tx handling', function (t) {
     })
   }
 
-  let tx = createMockTx()
-  let hash = getTxHash(tx)
+  const tx = createMockTx()
+  const hash = getTxHash(tx)
   t.test('unrequested tx', function (t) {
     t.plan(4)
     peerEvents.once('send', function (command, message) {
@@ -173,8 +173,8 @@ test('tx handling', function (t) {
   eventCleanup(t)
 
   t.test('requested tx', function (t) {
-    let tx = createMockTx()
-    let hash = getTxHash(tx)
+    const tx = createMockTx()
+    const hash = getTxHash(tx)
     peerEvents.once('send', function (command, message) {
       t.equal(command, 'getdata', 'sent getdata')
       t.equal(message.length, 1, 'getdata has length 1')
@@ -206,11 +206,11 @@ test('tx handling', function (t) {
 })
 
 test('broadcast', function (t) {
-  let peer = new MockPeer()
-  let inv = new Inventory(peer)
+  const peer = new MockPeer()
+  const inv = new Inventory(peer)
 
-  let tx = createMockTx()
-  let hash = getTxHash(tx)
+  const tx = createMockTx()
+  const hash = getTxHash(tx)
 
   t.test('broadcast', function (t) {
     peer.once('send', function (command, message) {
@@ -264,16 +264,16 @@ test('broadcast', function (t) {
 })
 
 test('expiration', function (t) {
-  var peer = new MockPeer()
-  var ttl = 500
-  var inv = new Inventory(peer, { ttl: ttl })
+  const peer = new MockPeer()
+  const ttl = 500
+  const inv = new Inventory(peer, { ttl: ttl })
 
-  let tx = createMockTx()
-  let hash = getTxHash(tx)
-  let tx2 = createMockTx()
-  let hash2 = getTxHash(tx2)
-  let tx3 = createMockTx()
-  let hash3 = getTxHash(tx3)
+  const tx = createMockTx()
+  const hash = getTxHash(tx)
+  const tx2 = createMockTx()
+  const hash2 = getTxHash(tx2)
+  const tx3 = createMockTx()
+  const hash3 = getTxHash(tx3)
 
   peer.emit('tx', tx)
   peer.emit('tx', tx2)
@@ -298,8 +298,8 @@ test('expiration', function (t) {
 })
 
 test('get', function (t) {
-  var peer = new MockPeer()
-  var inv = new Inventory(peer)
+  const peer = new MockPeer()
+  const inv = new Inventory(peer)
   t.test('get nonexistent tx', function (t) {
     t.notOk(inv.get(Buffer.alloc(32).fill('a')), 'no tx returned')
     t.end()

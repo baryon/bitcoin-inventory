@@ -19,7 +19,7 @@ class Inventory extends EventEmitter {
       throw Error('Must provide "peers" argument')
     }
     super()
-    let ttl = opts.ttl != null ? opts.ttl : 2 * 60 * 1000
+    const ttl = opts.ttl != null ? opts.ttl : 2 * 60 * 1000
     this.peers = peers
     this.data = new MapDeque()
     this.requesting = {}
@@ -35,10 +35,10 @@ class Inventory extends EventEmitter {
   }
 
   _onInv (items, peer = this.peers) {
-    let getData = []
-    for (let item of items) {
+    const getData = []
+    for (const item of items) {
       if (item.type !== INV.MSG_TX) continue
-      let hash = hashToString(item.hash)
+      const hash = hashToString(item.hash)
       if (this.requesting[hash] || this.data.has(hash)) continue
       getData.push(item)
       this.requesting[hash] = true
@@ -49,8 +49,8 @@ class Inventory extends EventEmitter {
   }
 
   _onTx (tx, peer = this.peers) {
-    let hash = getNonWitnessTxHash(tx)
-    let hashStr = hashToString(hash)
+    const hash = getNonWitnessTxHash(tx)
+    const hashStr = hashToString(hash)
     delete this.requesting[hashStr]
     if (this.data.has(hashStr)) return
     this._add(tx, false)
@@ -58,11 +58,11 @@ class Inventory extends EventEmitter {
   }
 
   _onGetdata (items, peer = this.peers) {
-    for (let item of items) {
+    for (const item of items) {
       if (!(item.type & INV.MSG_TX)) continue
-      let hash = hashToString(item.hash)
+      const hash = hashToString(item.hash)
       if (!this.data.has(hash)) continue
-      let entry = this.data.get(hash)
+      const entry = this.data.get(hash)
       if (!entry.broadcast) continue
       peer.send('tx', this.data.get(hash).tx)
     }
@@ -82,8 +82,8 @@ class Inventory extends EventEmitter {
   }
 
   _add (tx, broadcast) {
-    let hashBuf = getNonWitnessTxHash(tx)
-    let hash = hashToString(hashBuf)
+    const hashBuf = getNonWitnessTxHash(tx)
+    const hash = hashToString(hashBuf)
     if (!this.data.has(hash)) {
       this.data.push(hash, { tx, broadcast })
     } else {
@@ -103,7 +103,7 @@ class Inventory extends EventEmitter {
   }
 
   get (hash) {
-    let entry = this.data.get(hashToString(hash))
+    const entry = this.data.get(hashToString(hash))
     if (entry) return entry.tx
   }
 
@@ -114,7 +114,7 @@ class Inventory extends EventEmitter {
 }
 
 function reverse (buf) {
-  let clone = Buffer.allocUnsafe(buf.length)
+  const clone = Buffer.allocUnsafe(buf.length)
   buf.copy(clone)
   return clone.reverse()
 }
@@ -135,7 +135,7 @@ function getNonWitnessTxHash (tx) {
 }
 
 function getTxHash (tx) {
-  let txBytes = encodeTx(tx)
+  const txBytes = encodeTx(tx)
   return sha256(sha256(txBytes))
 }
 
